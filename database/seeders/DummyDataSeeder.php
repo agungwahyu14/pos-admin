@@ -42,7 +42,7 @@ class DummyDataSeeder extends Seeder
                 'sku' => 'COF-AMR-001',
                 'price' => 20000,
                 'stock' => 100,
-            ],
+            ],  
             [
                 'category_id' => $categoryIds['Coffee'],
                 'name' => 'Cafe Latte (Hot/Ice)',
