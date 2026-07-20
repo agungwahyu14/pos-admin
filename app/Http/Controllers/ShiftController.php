@@ -53,6 +53,7 @@ class ShiftController extends Controller
     {
         $request->validate([
             'actual_cash' => 'required|numeric|min:0',
+            'actual_qris' => 'required|numeric|min:0',
         ]);
 
         $shift = Shift::where('user_id', $request->user()->id)
@@ -69,16 +70,25 @@ class ShiftController extends Controller
             ->where('payment_method', 'cash')
             ->sum('total_amount');
 
+        // Calculate expected QRIS based on completed qris orders
+        $qrisSales = $shift->orders()
+            ->where('status', 'completed')
+            ->where('payment_method', 'qris')
+            ->sum('total_amount');
+
         // Placeholders for future refund & paid out features
         $cashRefund = 0;
         $cashPaidOut = 0;
 
         $expectedCash = $shift->starting_cash + $cashSales - $cashRefund - $cashPaidOut;
+        $expectedQris = $qrisSales; // Assuming no starting balance for QRIS
 
         $shift->update([
             'end_time' => Carbon::now(),
             'expected_cash' => $expectedCash,
             'actual_cash' => $request->actual_cash,
+            'expected_qris' => $expectedQris,
+            'actual_qris' => $request->actual_qris,
             'status' => 'closed',
         ]);
 

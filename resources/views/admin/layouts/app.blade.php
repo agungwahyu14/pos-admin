@@ -274,5 +274,6 @@
             to { width: 0%; }
         }
     </style>
+    @stack('scripts')
 </body>
 </html>

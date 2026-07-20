@@ -18,6 +18,8 @@ class Shift extends Model
         'starting_cash',
         'expected_cash',
         'actual_cash',
+        'expected_qris',
+        'actual_qris',
         'status',
     ];
 
@@ -29,6 +31,8 @@ class Shift extends Model
             'starting_cash' => 'decimal:2',
             'expected_cash' => 'decimal:2',
             'actual_cash' => 'decimal:2',
+            'expected_qris' => 'decimal:2',
+            'actual_qris' => 'decimal:2',
         ];
     }
 

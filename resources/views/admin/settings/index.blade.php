@@ -49,9 +49,62 @@
             </div>
         </div>
         
+        <hr class="my-4 divider">
+
+        <h5 class="fw-bold mb-4">Informasi Perubahan</h5>
+
+        <div class="mb-3">
+            <label class="form-label fw-medium">Tanggal Diubah</label>
+            <input
+                type="text"
+                id="tanggal_diubah"
+                name="tanggal_diubah"
+                class="form-control rounded-3 p-2 bg-white"
+                value="{{ old('tanggal_diubah', $settings->updated_at ? $settings->updated_at->format('d-m-Y') : '') }}"
+                placeholder="DDMMYYYY"
+                pattern="\d{2}-\d{2}-\d{4}"
+                maxlength="10"
+                inputmode="numeric"
+            >
+            <div class="form-text text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                Terakhir diubah:
+                {{ $settings->updated_at ? $settings->updated_at->format('d-m-Y') : 'Belum pernah disimpan' }}
+            </div>
+        </div>
+
         <div class="text-end mt-4">
             <x-button type="submit" variant="primary">Save Changes</x-button>
         </div>
     </form>
 </x-card>
+
+@push('scripts')
+<script>
+    const inputTanggal = document.getElementById('tanggal_diubah');
+
+    inputTanggal.addEventListener('input', function () {
+        const cursorPos  = this.selectionStart;
+        const prevLength = this.value.length;
+
+        // Ambil hanya digit, maksimal 8 karakter
+        const digits = this.value.replace(/\D/g, '').substring(0, 8);
+
+        // Format DD-MM-YYYY hanya jika ada digit
+        let formatted = digits;
+        if (digits.length > 4) {
+            formatted = digits.slice(0, 2) + '-' + digits.slice(2, 4) + '-' + digits.slice(4);
+        } else if (digits.length > 2) {
+            formatted = digits.slice(0, 2) + '-' + digits.slice(2);
+        }
+
+        this.value = formatted;
+
+        // Pertahankan posisi kursor supaya backspace terasa alami
+        const diff = formatted.length - prevLength;
+        const newPos = Math.max(0, cursorPos + diff);
+        this.setSelectionRange(newPos, newPos);
+    });
+</script>
+@endpush
 @endsection
