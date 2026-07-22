@@ -23,6 +23,16 @@ class ReportController extends Controller
             ->where('status', 'completed')
             ->count();
 
+        $qrisSales = Order::whereDate('created_at', $date)
+            ->where('status', 'completed')
+            ->where('payment_method', 'qris')
+            ->sum('total_amount');
+
+        $cashSales = Order::whereDate('created_at', $date)
+            ->where('status', 'completed')
+            ->where('payment_method', 'cash')
+            ->sum('total_amount');
+
         // Top selling products today
         $topProducts = DB::table('order_items')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
@@ -39,6 +49,8 @@ class ReportController extends Controller
             'daily_sales' => $dailySales,
             'transaction_count' => $transactionCount,
             'top_products' => $topProducts,
+            'qris_sales' => $qrisSales,
+            'cash_sales' => $cashSales,
         ]);
     }
 
