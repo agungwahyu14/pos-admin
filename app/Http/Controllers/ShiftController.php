@@ -20,6 +20,25 @@ class ShiftController extends Controller
             return response()->json(['message' => 'No active shift found.'], 404);
         }
 
+        $shift->load(['orders.orderItems.product.category']);
+        $expectedCups = 0;
+        $expectedFoods = 0;
+
+        foreach ($shift->orders as $order) {
+            if ($order->status !== 'completed') continue;
+            foreach ($order->orderItems as $item) {
+                $catName = strtolower($item->product->category->name ?? '');
+                if ($catName === 'cups' || $catName === 'cup') {
+                    $expectedCups += $item->quantity;
+                } elseif ($catName === 'food' || $catName === 'foods') {
+                    $expectedFoods += $item->quantity;
+                }
+            }
+        }
+        
+        $shift->expected_cups = $expectedCups;
+        $shift->expected_foods = $expectedFoods;
+
         return response()->json($shift);
     }
 
