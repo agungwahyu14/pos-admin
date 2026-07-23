@@ -12,14 +12,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Category::query();
-        
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where('name', 'like', "%{$search}%");
-        }
-        
-        $categories = $query->latest()->paginate(10);
+        $categories = Category::latest()->get();
         return view('admin.categories.index', compact('categories'));
     }
 
