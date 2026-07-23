@@ -135,9 +135,20 @@ class ShiftController extends Controller
     // Get shift history
     public function index(Request $request)
     {
-        $shifts = Shift::with('user')
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        $query = Shift::with('user')->orderBy('created_at', 'desc');
+
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $query->whereBetween('created_at', [
+                Carbon::parse($request->start_date)->startOfDay(),
+                Carbon::parse($request->end_date)->endOfDay(),
+            ]);
+        }
+
+        if ($request->has('per_page') && $request->per_page == -1) {
+             return response()->json($query->get());
+        }
+
+        $shifts = $query->paginate($request->per_page ?? 15);
 
         return response()->json($shifts);
     }
