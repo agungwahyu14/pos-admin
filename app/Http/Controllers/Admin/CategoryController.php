@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Http\Requests\Admin\CategoryRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -30,6 +31,11 @@ class CategoryController extends Controller
 
         Category::create($data);
 
+        Log::info('Admin: Category created', [
+            'name' => $data['name'],
+            'admin_id' => auth()->id()
+        ]);
+
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully');
     }
 
@@ -47,6 +53,12 @@ class CategoryController extends Controller
 
         $category->update($data);
 
+        Log::info('Admin: Category updated', [
+            'category_id' => $category->id,
+            'name' => $category->name,
+            'admin_id' => auth()->id()
+        ]);
+
         return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully');
     }
 
@@ -54,10 +66,20 @@ class CategoryController extends Controller
     {
         // Prevent deleting category if it has products (assuming relationship products() exists)
         if ($category->products()->count() > 0) {
+            Log::warning('Admin: Failed to delete category (has products)', [
+                'category_id' => $category->id,
+                'admin_id' => auth()->id()
+            ]);
             return redirect()->route('admin.categories.index')->with('error', 'Cannot delete category with associated products.');
         }
         
+        $categoryId = $category->id;
         $category->delete();
+
+        Log::info('Admin: Category deleted', [
+            'category_id' => $categoryId,
+            'admin_id' => auth()->id()
+        ]);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully');
     }

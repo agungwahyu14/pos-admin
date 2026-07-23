@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -26,6 +27,13 @@ class UserController extends Controller
         $validated['password'] = Hash::make($validated['password']);
         
         $user = User::create($validated);
+
+        Log::info('API: User created', [
+            'created_user_id' => $user->id,
+            'role' => $user->role,
+            'ip' => $request->ip(),
+            'by_user_id' => $request->user() ? $request->user()->id : null
+        ]);
 
         return response()->json($user, 201);
     }
@@ -52,13 +60,26 @@ class UserController extends Controller
 
         $user->update($validated);
 
+        Log::info('API: User updated', [
+            'updated_user_id' => $user->id,
+            'ip' => $request->ip(),
+            'by_user_id' => $request->user() ? $request->user()->id : null
+        ]);
+
         return response()->json($user);
     }
 
     public function destroy(User $user)
     {
+        $userId = $user->id;
         $user->delete();
         
+        Log::info('API: User deleted', [
+            'deleted_user_id' => $userId,
+            'ip' => $request->ip(),
+            'by_user_id' => $request->user() ? $request->user()->id : null
+        ]);
+
         return response()->json(null, 204);
     }
 }

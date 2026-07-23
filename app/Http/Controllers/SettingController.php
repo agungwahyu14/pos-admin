@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SettingController extends Controller
 {
@@ -33,6 +34,11 @@ class SettingController extends Controller
         $setting->update($validated);
 
         \Illuminate\Support\Facades\Cache::forget('settings.all');
+
+        Log::info('API: Global settings updated', [
+            'ip' => $request->ip(),
+            'user_id' => $request->user() ? $request->user()->id : null
+        ]);
 
         return response()->json($setting);
     }

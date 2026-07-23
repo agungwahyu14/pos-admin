@@ -7,6 +7,7 @@ use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class SettingController extends Controller
 {
@@ -70,6 +71,14 @@ class SettingController extends Controller
         }
 
         Cache::forget('settings.all');
+
+        Log::info('Admin: Global settings updated', [
+            'tax_enabled' => $validated['tax_enabled'] ?? false,
+            'tax_value' => $validated['tax_value'] ?? 0,
+            'service_enabled' => $validated['service_enabled'] ?? false,
+            'service_value' => $validated['service_value'] ?? 0,
+            'admin_id' => auth()->id()
+        ]);
 
         return redirect()->back()->with('success', 'Settings updated successfully');
     }

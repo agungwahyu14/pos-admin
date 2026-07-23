@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
@@ -31,6 +32,11 @@ class ProfileController extends Controller
         }
 
         $user->update($validated);
+
+        Log::info('Admin: Profile updated', [
+            'admin_id' => $user->id,
+            'password_changed' => !empty($validated['password'])
+        ]);
 
         return redirect()->route('admin.profile.edit')->with('success', 'Profile updated successfully.');
     }

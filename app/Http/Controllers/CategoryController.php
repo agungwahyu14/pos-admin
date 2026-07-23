@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -23,6 +24,13 @@ class CategoryController extends Controller
         $validated['slug'] = Str::slug($validated['name']);
 
         $category = Category::create($validated);
+
+        Log::info('API: Category created', [
+            'category_id' => $category->id,
+            'name' => $category->name,
+            'ip' => $request->ip(),
+            'user_id' => $request->user() ? $request->user()->id : null
+        ]);
 
         return response()->json($category, 201);
     }

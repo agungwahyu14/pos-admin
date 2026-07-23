@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Shift;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ShiftController extends Controller
 {
@@ -43,6 +44,13 @@ class ShiftController extends Controller
             'starting_cash' => $request->starting_cash,
             'status' => 'open',
             'start_time' => Carbon::now(),
+        ]);
+
+        Log::info('API: Shift opened', [
+            'shift_id' => $shift->id,
+            'starting_cash' => $shift->starting_cash,
+            'user_id' => $shift->user_id,
+            'ip' => $request->ip()
         ]);
 
         return response()->json($shift, 201);
@@ -91,6 +99,25 @@ class ShiftController extends Controller
             'actual_qris' => $request->actual_qris,
             'status' => 'closed',
         ]);
+
+        $cashDiff = $request->actual_cash - $expectedCash;
+        $qrisDiff = $request->actual_qris - $expectedQris;
+
+        if ($cashDiff != 0 || $qrisDiff != 0) {
+            Log::warning('API: Shift closed with discrepancy', [
+                'shift_id' => $shift->id,
+                'user_id' => $shift->user_id,
+                'cash_difference' => $cashDiff,
+                'qris_difference' => $qrisDiff,
+                'ip' => $request->ip()
+            ]);
+        } else {
+            Log::info('API: Shift closed successfully', [
+                'shift_id' => $shift->id,
+                'user_id' => $shift->user_id,
+                'ip' => $request->ip()
+            ]);
+        }
 
         return response()->json($shift);
     }

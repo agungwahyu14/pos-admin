@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -98,10 +99,25 @@ class OrderController extends Controller
 
             DB::commit();
 
+            Log::info('API: Order created successfully', [
+                'order_id' => $order->id,
+                'total_amount' => $order->total_amount,
+                'payment_method' => $order->payment_method,
+                'user_id' => $request->user()->id,
+                'ip' => $request->ip()
+            ]);
+
             return response()->json($order->load('orderItems.product'), 201);
 
         } catch (\Exception $e) {
             DB::rollBack();
+            
+            Log::error('API: Order creation failed', [
+                'error' => $e->getMessage(),
+                'user_id' => $request->user() ? $request->user()->id : null,
+                'ip' => $request->ip()
+            ]);
+
             return response()->json(['message' => $e->getMessage()], 400);
         }
     }
@@ -127,8 +143,21 @@ class OrderController extends Controller
                 }
                 $order->update(['status' => 'cancelled']);
             });
+
+            Log::warning('API: Order cancelled', [
+                'order_id' => $order->id,
+                'user_id' => $request->user() ? $request->user()->id : null,
+                'ip' => $request->ip()
+            ]);
         } else {
             $order->update(['status' => $request->status]);
+
+            Log::info('API: Order status updated', [
+                'order_id' => $order->id,
+                'status' => $request->status,
+                'user_id' => $request->user() ? $request->user()->id : null,
+                'ip' => $request->ip()
+            ]);
         }
 
         return response()->json($order);

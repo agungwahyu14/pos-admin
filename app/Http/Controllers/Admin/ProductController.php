@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Http\Requests\Admin\ProductRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -33,6 +34,11 @@ class ProductController extends Controller
 
         Product::create($data);
 
+        Log::info('Admin: Product created', [
+            'name' => $data['name'],
+            'admin_id' => auth()->id()
+        ]);
+
         return redirect()->route('admin.products.index')->with('success', 'Product created successfully');
     }
 
@@ -56,6 +62,12 @@ class ProductController extends Controller
 
         $product->update($data);
 
+        Log::info('Admin: Product updated', [
+            'product_id' => $product->id,
+            'name' => $product->name,
+            'admin_id' => auth()->id()
+        ]);
+
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully');
     }
 
@@ -67,7 +79,13 @@ class ProductController extends Controller
             Storage::disk('public')->delete($product->image);
         }
         
+        $productId = $product->id;
         $product->delete();
+
+        Log::info('Admin: Product deleted', [
+            'product_id' => $productId,
+            'admin_id' => auth()->id()
+        ]);
 
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully');
     }

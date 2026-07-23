@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PrinterSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PrinterSettingController extends Controller
 {
@@ -38,6 +39,13 @@ class PrinterSettingController extends Controller
 
         $setting = PrinterSetting::firstOrFail();
         $setting->update($validated);
+
+        Log::info('API: Printer settings updated', [
+            'printer_name' => $validated['printer_name'] ?? null,
+            'connection_type' => $validated['connection_type'] ?? null,
+            'ip' => $request->ip(),
+            'user_id' => $request->user() ? $request->user()->id : null
+        ]);
 
         return response()->json($setting);
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -57,6 +58,13 @@ class ProductController extends Controller
 
         $product = Product::create($validated);
 
+        Log::info('API: Product created', [
+            'product_id' => $product->id,
+            'name' => $product->name,
+            'ip' => $request->ip(),
+            'user_id' => $request->user() ? $request->user()->id : null
+        ]);
+
         return response()->json($product, 201);
     }
 
@@ -81,6 +89,13 @@ class ProductController extends Controller
 
         $product->update($validated);
 
+        Log::info('API: Product updated', [
+            'product_id' => $product->id,
+            'name' => $product->name,
+            'ip' => $request->ip(),
+            'user_id' => $request->user() ? $request->user()->id : null
+        ]);
+
         return response()->json($product);
     }
 
@@ -100,13 +115,31 @@ class ProductController extends Controller
         } else {
             $product->update(['stock' => $quantity]);
         }
+        $product->refresh();
+
+        Log::info('API: Product stock updated manually', [
+            'product_id' => $product->id,
+            'name' => $product->name,
+            'type' => $request->type,
+            'quantity' => $quantity,
+            'new_stock' => $product->stock,
+            'ip' => $request->ip(),
+            'user_id' => $request->user() ? $request->user()->id : null
+        ]);
 
         return response()->json($product);
     }
 
     public function destroy(Product $product)
     {
+        $productId = $product->id;
         $product->delete();
+
+        Log::info('API: Product deleted', [
+            'product_id' => $productId,
+            'ip' => $request->ip(),
+            'user_id' => $request->user() ? $request->user()->id : null
+        ]);
 
         return response()->json(null, 204);
     }

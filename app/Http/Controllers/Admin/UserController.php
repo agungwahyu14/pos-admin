@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Http\Requests\Admin\UserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -28,6 +29,11 @@ class UserController extends Controller
 
         User::create($data);
 
+        Log::info('Admin: User created', [
+            'created_user_email' => $data['email'],
+            'admin_id' => auth()->id()
+        ]);
+
         return redirect()->route('admin.users.index')->with('success', 'User created successfully');
     }
 
@@ -48,6 +54,11 @@ class UserController extends Controller
 
         $user->update($data);
 
+        Log::info('Admin: User updated', [
+            'updated_user_id' => $user->id,
+            'admin_id' => auth()->id()
+        ]);
+
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
     }
 
@@ -55,10 +66,20 @@ class UserController extends Controller
     {
         // Prevent deleting yourself
         if (auth()->id() === $user->id) {
+            Log::warning('Admin: Failed to delete user (self-deletion attempt)', [
+                'user_id' => $user->id,
+                'admin_id' => auth()->id()
+            ]);
             return redirect()->route('admin.users.index')->with('error', 'You cannot delete yourself.');
         }
         
+        $userId = $user->id;
         $user->delete();
+
+        Log::info('Admin: User deleted', [
+            'deleted_user_id' => $userId,
+            'admin_id' => auth()->id()
+        ]);
 
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
     }
