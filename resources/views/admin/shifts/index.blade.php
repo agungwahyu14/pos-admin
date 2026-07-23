@@ -56,6 +56,10 @@
                     <th>Opening Cash</th>
                     <th>Expected Cash</th>
                     <th>Actual Cash</th>
+                    <th>Expected QRIS</th>
+                    <th>Actual QRIS</th>
+                    <th>Total Expected</th>
+                    <th>Total Actual</th>
                     <th>Cups (Target vs Actual)</th>
                     <th>Foods (Target vs Actual)</th>
                     <th>Status</th>
@@ -80,6 +84,22 @@
                     <td>
                         @if($shift->actual_cash !== null)
                             Rp {{ number_format($shift->actual_cash, 0, ',', '.') }}
+                        @else
+                            <span class="text-muted">Not closed</span>
+                        @endif
+                    </td>
+                    <td>Rp {{ number_format($shift->expected_qris, 0, ',', '.') }}</td>
+                    <td>
+                        @if($shift->actual_qris !== null)
+                            Rp {{ number_format($shift->actual_qris, 0, ',', '.') }}
+                        @else
+                            <span class="text-muted">Not closed</span>
+                        @endif
+                    </td>
+                    <td class="fw-bold text-primary">Rp {{ number_format($shift->expected_cash + $shift->expected_qris, 0, ',', '.') }}</td>
+                    <td class="fw-bold {{ ($shift->actual_cash !== null) ? (($shift->actual_cash + $shift->actual_qris) >= ($shift->expected_cash + $shift->expected_qris) ? 'text-success' : 'text-danger') : '' }}">
+                        @if($shift->actual_cash !== null && $shift->actual_qris !== null)
+                            Rp {{ number_format($shift->actual_cash + $shift->actual_qris, 0, ',', '.') }}
                         @else
                             <span class="text-muted">Not closed</span>
                         @endif
