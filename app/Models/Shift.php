@@ -20,6 +20,8 @@ class Shift extends Model
         'actual_cash',
         'expected_qris',
         'actual_qris',
+        'target_cups',
+        'target_foods',
         'status',
     ];
 

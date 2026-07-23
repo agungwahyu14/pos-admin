@@ -16,16 +16,16 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' => 'Admin POS',
-            'email' => 'admin@pos.test',
+            'name' => 'Admin',
+            'email' => 'admin@pos.com',
             'email_verified_at' => now(),
             'password' => bcrypt('password'),
             'role' => 'admin',
         ]);
 
         User::create([
-            'name' => 'Kasir 1',
-            'email' => 'kasir@pos.test',
+            'name' => 'Kasir',
+            'email' => 'kasir@pos.com',
             'email_verified_at' => now(),
             'password' => bcrypt('password'),
             'role' => 'petugas',
@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             DummyDataSeeder::class,
-            OrderSeeder::class,
+            SettingSeeder::class,
         ]);
     }
 }

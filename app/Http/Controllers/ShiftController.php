@@ -28,6 +28,8 @@ class ShiftController extends Controller
     {
         $request->validate([
             'starting_cash' => 'required|numeric|min:0',
+            'target_cups' => 'nullable|integer',
+            'target_foods' => 'nullable|integer',
         ]);
 
         // Check if there's already an open shift for this user
@@ -42,6 +44,8 @@ class ShiftController extends Controller
         $shift = Shift::create([
             'user_id' => $request->user()->id,
             'starting_cash' => $request->starting_cash,
+            'target_cups' => $request->target_cups ?? 30,
+            'target_foods' => $request->target_foods ?? 30,
             'status' => 'open',
             'start_time' => Carbon::now(),
         ]);
