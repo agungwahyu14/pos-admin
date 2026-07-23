@@ -156,6 +156,10 @@
                 <i class="bi bi-gear me-3 fs-5"></i> Settings
             </a>
             
+            <a href="{{ route('admin.profile.edit') }}" class="nav-item-link {{ request()->routeIs('admin.profile.*') ? 'active' : '' }}">
+                <i class="bi bi-person me-3 fs-5"></i> My Profile
+            </a>
+            
             <form method="POST" action="{{ route('admin.logout') }}" class="mt-4">
                 @csrf
                 <button type="submit" class="nav-item-link w-100 text-danger bg-transparent border-0 text-start">
