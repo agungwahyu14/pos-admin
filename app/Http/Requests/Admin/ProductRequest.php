@@ -25,6 +25,7 @@ class ProductRequest extends FormRequest
 
         return [
             'category_id' => 'required|exists:categories,id',
+            'sub_category_id' => 'required|exists:sub_categories,id',
             'name' => 'required|string|max:255',
             'sku' => 'nullable|string|max:50|unique:products,sku,' . $productId,
             'description' => 'nullable|string',

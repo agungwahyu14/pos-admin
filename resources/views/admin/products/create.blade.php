@@ -35,15 +35,27 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="category_id" class="form-label fw-medium">Category <span class="text-danger">*</span></label>
-                            <select name="category_id" id="category_id" class="form-select bg-white rounded-3 p-2 @error('category_id') is-invalid @enderror" required>
+                            <select name="category_id" id="category_id" class="form-select bg-white rounded-3 p-2 @error('category_id') is-invalid @enderror" required onchange="updateSubCategories()">
                                 <option value="">Select Category</option>
                                 @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                    <option value="{{ $category->id }}" data-subcats="{{ $category->subCategories->toJson() }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
                                     </option>
                                 @endforeach
                             </select>
                             @error('category_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="sub_category_id" class="form-label fw-medium">Sub-Category <span class="text-danger">*</span></label>
+                            <select name="sub_category_id" id="sub_category_id" class="form-select bg-white rounded-3 p-2 @error('sub_category_id') is-invalid @enderror" required>
+                                <option value="">Select Sub-Category</option>
+                            </select>
+                            @error('sub_category_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -99,4 +111,38 @@
         </div>
     </div>
 </form>
+
+@push('scripts')
+<script>
+    function updateSubCategories() {
+        const categorySelect = document.getElementById('category_id');
+        const subCategorySelect = document.getElementById('sub_category_id');
+        const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+        
+        // Clear current options
+        subCategorySelect.innerHTML = '<option value="">Select Sub-Category</option>';
+        
+        if (!selectedOption.value) return;
+        
+        try {
+            const subCats = JSON.parse(selectedOption.getAttribute('data-subcats') || '[]');
+            const oldSubCat = "{{ old('sub_category_id') }}";
+            
+            subCats.forEach(sub => {
+                const option = document.createElement('option');
+                option.value = sub.id;
+                option.textContent = sub.name;
+                if (oldSubCat == sub.id) {
+                    option.selected = true;
+                }
+                subCategorySelect.appendChild(option);
+            });
+        } catch (e) {
+            console.error("Error parsing subcategories", e);
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', updateSubCategories);
+</script>
+@endpush
 @endsection
