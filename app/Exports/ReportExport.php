@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Order;
+use App\Models\Shift;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -32,6 +33,23 @@ class ReportExport implements FromCollection, WithHeadings, WithMapping
             $query->whereYear('created_at', Carbon::now()->year);
         }
 
+        $shiftsQuery = Shift::query();
+        if ($this->dateRange === 'today') {
+            $shiftsQuery->whereDate('created_at', Carbon::today());
+        } elseif ($this->dateRange === 'week') {
+            $shiftsQuery->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+        } elseif ($this->dateRange === 'month') {
+            $shiftsQuery->whereMonth('created_at', Carbon::now()->month)
+                  ->whereYear('created_at', Carbon::now()->year);
+        } elseif ($this->dateRange === 'year') {
+            $shiftsQuery->whereYear('created_at', Carbon::now()->year);
+        }
+
+        $totalTargetCups = $shiftsQuery->sum('target_cups');
+        $totalActualCups = $shiftsQuery->sum('actual_cups');
+        $totalTargetFoods = $shiftsQuery->sum('target_foods');
+        $totalActualFoods = $shiftsQuery->sum('actual_foods');
+
         $orders = $query->get();
 
         $summary = (object)[
@@ -44,7 +62,27 @@ class ReportExport implements FromCollection, WithHeadings, WithMapping
             'total_amount' => $orders->sum('total_amount'),
         ];
 
-        return $orders->push($summary);
+        $orders->push($summary);
+
+        $orders->push((object)['is_empty' => true]);
+
+        $orders->push((object)[
+            'is_target_summary' => true,
+            'label' => 'Total Cups (Actual vs Target)',
+            'actual' => $totalActualCups,
+            'target' => $totalTargetCups,
+            'status' => $totalActualCups >= $totalTargetCups ? 'Tercapai' : 'Tidak Tercapai (Kurang ' . ($totalTargetCups - $totalActualCups) . ')'
+        ]);
+
+        $orders->push((object)[
+            'is_target_summary' => true,
+            'label' => 'Total Foods (Actual vs Target)',
+            'actual' => $totalActualFoods,
+            'target' => $totalTargetFoods,
+            'status' => $totalActualFoods >= $totalTargetFoods ? 'Tercapai' : 'Tidak Tercapai (Kurang ' . ($totalTargetFoods - $totalActualFoods) . ')'
+        ]);
+
+        return $orders;
     }
 
     public function headings(): array
@@ -77,6 +115,25 @@ class ReportExport implements FromCollection, WithHeadings, WithMapping
                 $order->service_charge,
                 $order->total_amount,
                 '',
+            ];
+        }
+
+        if (isset($order->is_empty)) {
+            return ['', '', '', '', '', '', '', '', '', ''];
+        }
+
+        if (isset($order->is_target_summary)) {
+            return [
+                $order->label,
+                '',
+                '',
+                '',
+                $order->actual . ' (Actual)',
+                $order->target . ' (Target)',
+                '',
+                '',
+                '',
+                $order->status,
             ];
         }
 
