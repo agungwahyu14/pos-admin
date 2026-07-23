@@ -27,6 +27,11 @@
                         <option value="all" {{ $dateRange === 'all' ? 'selected' : '' }}>All Time</option>
                     </select>
                 </div>
+                <div>
+                    <a href="{{ route('admin.reports.export', ['date_range' => $dateRange]) }}" class="btn btn-success p-2 rounded-3 shadow-sm d-flex align-items-center fw-medium" style="height: 42px;">
+                        <i class="bi bi-file-earmark-excel me-2"></i> Export Excel
+                    </a>
+                </div>
             </form>
         </x-card>
     </div>

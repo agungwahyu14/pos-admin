@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ReportExport;
 
 class ReportController extends Controller
 {
@@ -66,5 +68,13 @@ class ReportController extends Controller
             'totalRevenue', 'totalOrders', 'totalDiscount', 'totalTax',
             'paymentMethods', 'topProducts', 'dateRange'
         ));
+    }
+
+    public function export(Request $request)
+    {
+        $dateRange = $request->input('date_range', 'today');
+        $fileName = 'Laporan_Penjualan_' . ucfirst($dateRange) . '_' . date('Ymd_His') . '.xlsx';
+        
+        return Excel::download(new ReportExport($dateRange), $fileName);
     }
 }

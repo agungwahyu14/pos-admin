@@ -34,6 +34,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('shifts', ShiftController::class);
         
         Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('reports/export', [ReportController::class, 'export'])->name('reports.export');
         
         Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
         Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
