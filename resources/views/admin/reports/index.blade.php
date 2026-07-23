@@ -37,7 +37,7 @@
         <x-card class="bg-primary text-white text-center shadow-sm border-0 h-100">
             <div class="mb-2"><i class="bi bi-wallet2 fs-2 opacity-75"></i></div>
             <p class="mb-1 text-white-50 fw-medium">Total Revenue</p>
-            <h3 class="fw-bold mb-0">Rp{{ number_format($totalRevenue, 0, ',', '.') }}</h3>
+            <h3 class="fw-bold mb-0">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</h3>
         </x-card>
     </div>
     <div class="col-md-3">
@@ -51,14 +51,14 @@
         <x-card class="bg-info text-white text-center shadow-sm border-0 h-100">
             <div class="mb-2"><i class="bi bi-tags fs-2 opacity-75"></i></div>
             <p class="mb-1 text-white-50 fw-medium">Total Discount</p>
-            <h3 class="fw-bold mb-0">Rp{{ number_format($totalDiscount, 0, ',', '.') }}</h3>
+            <h3 class="fw-bold mb-0">Rp {{ number_format($totalDiscount, 0, ',', '.') }}</h3>
         </x-card>
     </div>
     <div class="col-md-3">
         <x-card class="bg-warning text-white text-center shadow-sm border-0 h-100">
             <div class="mb-2"><i class="bi bi-receipt fs-2 opacity-75"></i></div>
             <p class="mb-1 text-white-50 fw-medium">Total Tax</p>
-            <h3 class="fw-bold mb-0">Rp{{ number_format($totalTax, 0, ',', '.') }}</h3>
+            <h3 class="fw-bold mb-0">Rp {{ number_format($totalTax, 0, ',', '.') }}</h3>
         </x-card>
     </div>
 </div>
@@ -83,7 +83,7 @@
                             <td class="text-center">
                                 <span class="badge bg-primary rounded-pill px-3 py-2">{{ $item->total_quantity }}</span>
                             </td>
-                            <td class="text-end text-success fw-medium">Rp{{ number_format($item->total_revenue, 0, ',', '.') }}</td>
+                            <td class="text-end text-success fw-medium">Rp {{ number_format($item->total_revenue, 0, ',', '.') }}</td>
                         </tr>
                         @empty
                         <tr>
@@ -130,7 +130,7 @@
                                 @endif
                             </td>
                             <td class="text-center fw-medium">{{ $pm->count }}</td>
-                            <td class="text-end fw-medium">Rp{{ number_format($pm->total, 0, ',', '.') }}</td>
+                            <td class="text-end fw-medium">Rp {{ number_format($pm->total, 0, ',', '.') }}</td>
                         </tr>
                         @empty
                         <tr>

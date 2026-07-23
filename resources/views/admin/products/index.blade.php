@@ -79,7 +79,7 @@
                         <div class="small text-muted">{{ $product->sku }}</div>
                     </td>
                     <td>{{ $product->category->name ?? '-' }}</td>
-                    <td class="fw-medium">Rp{{ number_format($product->price, 0, ',', '.') }}</td>
+                    <td class="fw-medium">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
                     <td>
                         <span class="badge {{ $product->stock <= 10 ? 'bg-danger bg-opacity-10 text-danger' : 'bg-success bg-opacity-10 text-success' }} rounded-pill px-3 py-2">
                             {{ $product->stock }}

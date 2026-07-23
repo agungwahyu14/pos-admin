@@ -17,7 +17,7 @@
                 </div>
                 <div>
                     <div class="small fw-medium text-white-50">Today's Sales</div>
-                    <div class="fs-4 fw-bold">Rp{{ number_format($todaysSales, 0, ',', '.') }}</div>
+                    <div class="fs-4 fw-bold">Rp {{ number_format($todaysSales, 0, ',', '.') }}</div>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
                 </div>
                 <div>
                     <div class="small fw-medium text-white-50">Average Order</div>
-                    <div class="fs-4 fw-bold">Rp{{ number_format($averageOrder, 0, ',', '.') }}</div>
+                    <div class="fs-4 fw-bold">Rp {{ number_format($averageOrder, 0, ',', '.') }}</div>
                 </div>
             </div>
         </div>

@@ -73,11 +73,11 @@
                     </td>
                     <td>{{ $shift->start_time->format('d M Y, H:i') }}</td>
                     <td>{{ $shift->end_time ? $shift->end_time->format('d M Y, H:i') : '-' }}</td>
-                    <td>Rp{{ number_format($shift->starting_cash, 0, ',', '.') }}</td>
-                    <td>Rp{{ number_format($shift->expected_cash, 0, ',', '.') }}</td>
+                    <td>Rp {{ number_format($shift->starting_cash, 0, ',', '.') }}</td>
+                    <td>Rp {{ number_format($shift->expected_cash, 0, ',', '.') }}</td>
                     <td>
                         @if($shift->actual_cash !== null)
-                            Rp{{ number_format($shift->actual_cash, 0, ',', '.') }}
+                            Rp {{ number_format($shift->actual_cash, 0, ',', '.') }}
                         @else
                             <span class="text-muted">-</span>
                         @endif

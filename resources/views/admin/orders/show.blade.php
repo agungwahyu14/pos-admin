@@ -41,9 +41,9 @@
                                     <div class="small text-muted">{{ $item->product->sku }}</div>
                                 @endif
                             </td>
-                            <td class="text-end">Rp{{ number_format($item->unit_price, 0, ',', '.') }}</td>
+                            <td class="text-end">Rp {{ number_format($item->unit_price, 0, ',', '.') }}</td>
                             <td class="text-center">{{ $item->quantity }}</td>
-                            <td class="text-end fw-medium">Rp{{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                            <td class="text-end fw-medium">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -56,29 +56,29 @@
                         <tbody>
                             <tr>
                                 <td class="text-muted">Subtotal</td>
-                                <td class="text-end fw-medium">Rp{{ number_format($order->subtotal, 0, ',', '.') }}</td>
+                                <td class="text-end fw-medium">Rp {{ number_format($order->subtotal, 0, ',', '.') }}</td>
                             </tr>
                             @if($order->discount_amount > 0)
                             <tr>
                                 <td class="text-muted">Discount</td>
-                                <td class="text-end text-danger fw-medium">- Rp{{ number_format($order->discount_amount, 0, ',', '.') }}</td>
+                                <td class="text-end text-danger fw-medium">- Rp {{ number_format($order->discount_amount, 0, ',', '.') }}</td>
                             </tr>
                             @endif
                             @if($order->tax > 0)
                             <tr>
                                 <td class="text-muted">Tax</td>
-                                <td class="text-end fw-medium">Rp{{ number_format($order->tax, 0, ',', '.') }}</td>
+                                <td class="text-end fw-medium">Rp {{ number_format($order->tax, 0, ',', '.') }}</td>
                             </tr>
                             @endif
                             @if($order->service_charge > 0)
                             <tr>
                                 <td class="text-muted">Service Charge</td>
-                                <td class="text-end fw-medium">Rp{{ number_format($order->service_charge, 0, ',', '.') }}</td>
+                                <td class="text-end fw-medium">Rp {{ number_format($order->service_charge, 0, ',', '.') }}</td>
                             </tr>
                             @endif
                             <tr class="border-top">
                                 <td class="fw-bold fs-5 pt-2">Total</td>
-                                <td class="text-end fw-bold fs-5 pt-2 text-primary">Rp{{ number_format($order->total_amount, 0, ',', '.') }}</td>
+                                <td class="text-end fw-bold fs-5 pt-2 text-primary">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -145,12 +145,12 @@
             
             <div class="mb-3">
                 <div class="text-muted small">Amount Paid</div>
-                <div class="fw-bold fs-5">Rp{{ number_format($order->amount_paid, 0, ',', '.') }}</div>
+                <div class="fw-bold fs-5">Rp {{ number_format($order->amount_paid, 0, ',', '.') }}</div>
             </div>
             
             <div>
                 <div class="text-muted small">Change</div>
-                <div class="fw-medium">Rp{{ number_format($order->change_amount, 0, ',', '.') }}</div>
+                <div class="fw-medium">Rp {{ number_format($order->change_amount, 0, ',', '.') }}</div>
             </div>
         </x-card>
     </div>

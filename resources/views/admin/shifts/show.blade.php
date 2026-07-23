@@ -69,13 +69,13 @@
                 <div class="col-md-4">
                     <div class="p-3 bg-light rounded-3 border">
                         <div class="text-muted small mb-1">Opening Cash</div>
-                        <div class="fw-bold fs-4 text-dark">Rp{{ number_format($shift->starting_cash, 0, ',', '.') }}</div>
+                        <div class="fw-bold fs-4 text-dark">Rp {{ number_format($shift->starting_cash, 0, ',', '.') }}</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="p-3 bg-light rounded-3 border">
                         <div class="text-muted small mb-1">Expected Cash</div>
-                        <div class="fw-bold fs-4 text-primary">Rp{{ number_format($shift->expected_cash, 0, ',', '.') }}</div>
+                        <div class="fw-bold fs-4 text-primary">Rp {{ number_format($shift->expected_cash, 0, ',', '.') }}</div>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -83,7 +83,7 @@
                         <div class="text-muted small mb-1">Actual Cash</div>
                         <div class="fw-bold fs-4 {{ $shift->actual_cash == $shift->expected_cash ? 'text-success' : ($shift->actual_cash < $shift->expected_cash ? 'text-danger' : 'text-dark') }}">
                             @if($shift->actual_cash !== null)
-                                Rp{{ number_format($shift->actual_cash, 0, ',', '.') }}
+                                Rp {{ number_format($shift->actual_cash, 0, ',', '.') }}
                             @else
                                 <span class="fs-6 text-muted">Not closed yet</span>
                             @endif
@@ -107,7 +107,7 @@
                         <div class="alert alert-danger d-flex align-items-center mb-0 py-2 border-0">
                             <i class="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
                             <div>
-                                <strong>Shortage:</strong> Rp{{ number_format(abs($diff), 0, ',', '.') }}
+                                <strong>Shortage:</strong> Rp {{ number_format(abs($diff), 0, ',', '.') }}
                                 <div class="small mt-1">Actual cash is less than expected.</div>
                             </div>
                         </div>
@@ -115,7 +115,7 @@
                         <div class="alert alert-warning d-flex align-items-center mb-0 py-2 border-0">
                             <i class="bi bi-info-circle-fill me-3 fs-4"></i>
                             <div>
-                                <strong>Overage:</strong> Rp{{ number_format($diff, 0, ',', '.') }}
+                                <strong>Overage:</strong> Rp {{ number_format($diff, 0, ',', '.') }}
                                 <div class="small mt-1">Actual cash is more than expected.</div>
                             </div>
                         </div>
@@ -145,7 +145,7 @@
                                 <td class="fw-medium">#ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</td>
                                 <td>{{ $order->created_at->format('H:i') }}</td>
                                 <td>{{ ucfirst($order->payment_method) }}</td>
-                                <td class="text-end fw-bold">Rp{{ number_format($order->total_amount, 0, ',', '.') }}</td>
+                                <td class="text-end fw-bold">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</td>
                                 <td class="text-end">
                                     <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-sm btn-light text-primary">View</a>
                                 </td>
