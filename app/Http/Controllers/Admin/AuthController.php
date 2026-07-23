@@ -19,29 +19,30 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
+        $request->validate([
+            'name'     => ['required', 'string'],
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            if (Auth::user()->role !== 'admin') {
-                Auth::logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
-                return back()->withErrors([
-                    'email' => 'Access denied. Only admins can login here.',
-                ])->onlyInput('email');
-            }
+        // Find user by name
+        $user = \App\Models\User::where('name', $request->name)->first();
 
-            $request->session()->regenerate();
-
-            return redirect()->intended(route('admin.dashboard'));
+        if (!$user || !\Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'name' => 'The provided credentials do not match our records.',
+            ])->onlyInput('name');
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+        if ($user->role !== 'admin') {
+            return back()->withErrors([
+                'name' => 'Access denied. Only admins can login here.',
+            ])->onlyInput('name');
+        }
+
+        Auth::login($user, $request->boolean('remember'));
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('admin.dashboard'));
     }
 
     public function logout(Request $request)

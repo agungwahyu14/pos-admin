@@ -44,9 +44,12 @@
             @csrf
             
             <div class="mb-3">
-                <label for="email" class="form-label fw-medium">Email Address</label>
-                <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
-                    class="form-control bg-white rounded-3 p-2">
+                <label for="name" class="form-label fw-medium">Username / Name</label>
+                <input type="text" name="name" id="name" value="{{ old('name') }}" required autofocus
+                    class="form-control bg-white rounded-3 p-2 @error('name') is-invalid @enderror">
+                @error('name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="mb-4">
