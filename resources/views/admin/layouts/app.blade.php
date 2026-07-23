@@ -134,6 +134,9 @@
             <a href="{{ route('admin.categories.index') }}" class="nav-item-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                 <i class="bi bi-tags me-3 fs-5"></i> Categories
             </a>
+            <a href="{{ route('admin.subcategories.index') }}" class="nav-item-link {{ request()->routeIs('admin.subcategories.*') ? 'active' : '' }}">
+                <i class="bi bi-bookmarks me-3 fs-5"></i> Sub Categories
+            </a>
             <a href="{{ route('admin.products.index') }}" class="nav-item-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
                 <i class="bi bi-box-seam me-3 fs-5"></i> Products
             </a>

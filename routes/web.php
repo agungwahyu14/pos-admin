@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\OrderController;
@@ -28,6 +29,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
         
         Route::resource('categories', CategoryController::class);
+        Route::resource('subcategories', SubCategoryController::class);
         Route::resource('products', ProductController::class);
         Route::resource('users', UserController::class);
         Route::resource('orders', OrderController::class);
