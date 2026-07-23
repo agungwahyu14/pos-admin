@@ -22,6 +22,9 @@ class Shift extends Model
         'actual_qris',
         'target_cups',
         'target_foods',
+        'actual_cups',
+        'actual_foods',
+        'close_notes',
         'status',
     ];
 

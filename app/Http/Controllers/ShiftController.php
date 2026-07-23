@@ -66,6 +66,9 @@ class ShiftController extends Controller
         $request->validate([
             'actual_cash' => 'required|numeric|min:0',
             'actual_qris' => 'required|numeric|min:0',
+            'actual_cups' => 'nullable|integer',
+            'actual_foods' => 'nullable|integer',
+            'close_notes' => 'nullable|string',
         ]);
 
         $shift = Shift::where('user_id', $request->user()->id)
@@ -101,6 +104,9 @@ class ShiftController extends Controller
             'actual_cash' => $request->actual_cash,
             'expected_qris' => $expectedQris,
             'actual_qris' => $request->actual_qris,
+            'actual_cups' => $request->actual_cups ?? 0,
+            'actual_foods' => $request->actual_foods ?? 0,
+            'close_notes' => $request->close_notes,
             'status' => 'closed',
         ]);
 

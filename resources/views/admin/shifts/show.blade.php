@@ -123,6 +123,71 @@
                 </div>
             @endif
         </x-card>
+
+        <x-card class="mb-4">
+            <h5 class="fw-bold mb-4 border-bottom pb-2">Target Achievement Summary</h5>
+            
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="text-muted small mb-2 text-uppercase fw-bold">Cups Target</div>
+                        <div class="d-flex justify-content-between align-items-end mb-2">
+                            <div>
+                                <span class="fs-4 fw-bold text-dark">{{ $shift->actual_cups ?? 0 }}</span>
+                                <span class="text-muted"> / {{ $shift->target_cups ?? 30 }}</span>
+                            </div>
+                            @if($shift->status === 'closed')
+                                @if(($shift->actual_cups ?? 0) >= ($shift->target_cups ?? 30))
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2">Achieved</span>
+                                @else
+                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-2">Short ({{ ($shift->target_cups ?? 30) - ($shift->actual_cups ?? 0) }})</span>
+                                @endif
+                            @endif
+                        </div>
+                        @php
+                            $cupsPercent = min(100, (($shift->actual_cups ?? 0) / max(1, $shift->target_cups ?? 30)) * 100);
+                        @endphp
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar {{ $cupsPercent >= 100 ? 'bg-success' : 'bg-primary' }}" role="progressbar" style="width: {{ $cupsPercent }}%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="text-muted small mb-2 text-uppercase fw-bold">Foods Target</div>
+                        <div class="d-flex justify-content-between align-items-end mb-2">
+                            <div>
+                                <span class="fs-4 fw-bold text-dark">{{ $shift->actual_foods ?? 0 }}</span>
+                                <span class="text-muted"> / {{ $shift->target_foods ?? 30 }}</span>
+                            </div>
+                            @if($shift->status === 'closed')
+                                @if(($shift->actual_foods ?? 0) >= ($shift->target_foods ?? 30))
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2">Achieved</span>
+                                @else
+                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-2">Short ({{ ($shift->target_foods ?? 30) - ($shift->actual_foods ?? 0) }})</span>
+                                @endif
+                            @endif
+                        </div>
+                        @php
+                            $foodsPercent = min(100, (($shift->actual_foods ?? 0) / max(1, $shift->target_foods ?? 30)) * 100);
+                        @endphp
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar {{ $foodsPercent >= 100 ? 'bg-success' : 'bg-primary' }}" role="progressbar" style="width: {{ $foodsPercent }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if($shift->status === 'closed' && $shift->close_notes)
+                <div class="mt-2 pt-3 border-top">
+                    <h6 class="fw-bold mb-2">Cashier Notes</h6>
+                    <div class="p-3 bg-light rounded-3 border-start border-4 border-warning">
+                        <p class="mb-0 text-dark fst-italic">{{ $shift->close_notes }}</p>
+                    </div>
+                </div>
+            @endif
+        </x-card>
         
         <x-card>
             <h5 class="fw-bold mb-4 border-bottom pb-2">Shift Orders ({{ $shift->orders->count() }})</h5>
