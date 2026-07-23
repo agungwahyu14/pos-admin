@@ -56,6 +56,8 @@
                     <th>Opening Cash</th>
                     <th>Expected Cash</th>
                     <th>Actual Cash</th>
+                    <th>Cups (Target vs Actual)</th>
+                    <th>Foods (Target vs Actual)</th>
                     <th>Status</th>
                     <th class="text-end">Actions</th>
                 </tr>
@@ -79,7 +81,29 @@
                         @if($shift->actual_cash !== null)
                             Rp {{ number_format($shift->actual_cash, 0, ',', '.') }}
                         @else
-                            <span class="text-muted">-</span>
+                            <span class="text-muted">Not closed</span>
+                        @endif
+                    </td>
+                    <td>
+                        @if($shift->status === 'closed')
+                            @if(($shift->actual_cups ?? 0) >= ($shift->target_cups ?? 30))
+                                <span class="text-success fw-bold">{{ $shift->actual_cups }}</span> / {{ $shift->target_cups }}
+                            @else
+                                <span class="text-danger fw-bold">{{ $shift->actual_cups ?? 0 }}</span> / {{ $shift->target_cups }}
+                            @endif
+                        @else
+                            <span class="text-muted">-</span> / {{ $shift->target_cups ?? 30 }}
+                        @endif
+                    </td>
+                    <td>
+                        @if($shift->status === 'closed')
+                            @if(($shift->actual_foods ?? 0) >= ($shift->target_foods ?? 30))
+                                <span class="text-success fw-bold">{{ $shift->actual_foods }}</span> / {{ $shift->target_foods }}
+                            @else
+                                <span class="text-danger fw-bold">{{ $shift->actual_foods ?? 0 }}</span> / {{ $shift->target_foods }}
+                            @endif
+                        @else
+                            <span class="text-muted">-</span> / {{ $shift->target_foods ?? 30 }}
                         @endif
                     </td>
                     <td>
