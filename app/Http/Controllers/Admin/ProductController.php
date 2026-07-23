@@ -13,15 +13,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with('category');
-        
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('sku', 'like', "%{$search}%");
-        }
-        
-        $products = $query->latest()->paginate(10);
+        $products = Product::with('category')->latest()->get();
         return view('admin.products.index', compact('products'));
     }
 

@@ -1,5 +1,53 @@
 @extends('admin.layouts.app')
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+<style>
+    #categoriesTable_wrapper .dataTables_filter input {
+        border-radius: 10px;
+        border: 1px solid #dee2e6;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        background-color: #ffffff;
+    }
+    #categoriesTable_wrapper .dataTables_filter input:focus {
+        outline: none;
+        border-color: var(--bs-primary);
+        box-shadow: 0 0 0 3px rgba(5, 128, 140, 0.15);
+    }
+    #categoriesTable_wrapper .dataTables_length select {
+        border-radius: 10px;
+        border: 1px solid #dee2e6;
+        padding: 6px 28px 6px 12px;
+        font-size: 0.875rem;
+        background-color: #ffffff;
+    }
+    #categoriesTable_wrapper .dataTables_info,
+    #categoriesTable_wrapper .dataTables_length {
+        font-size: 0.85rem;
+        color: #6B7280;
+    }
+    #categoriesTable_wrapper .page-link {
+        border-radius: 8px !important;
+        margin: 0 2px;
+        font-size: 0.85rem;
+        color: var(--bs-primary);
+    }
+    #categoriesTable_wrapper .page-item.active .page-link {
+        background-color: var(--bs-primary);
+        border-color: var(--bs-primary);
+        color: #fff;
+    }
+    /* Cursor pointer on sortable columns */
+    #categoriesTable thead th.sorting,
+    #categoriesTable thead th.sorting_asc,
+    #categoriesTable thead th.sorting_desc {
+        cursor: pointer;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -21,10 +69,10 @@
         <table id="categoriesTable" class="table table-hover align-middle w-100">
             <thead class="table-primary">
                 <tr>
-                    <th width="60">ID</th>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>Slug</th>
-                    <th width="120" class="text-end">Actions</th>
+                    <th class="text-end no-sort">Actions</th>
                 </tr>
             </thead>
             <tbody class="table-light">
@@ -54,49 +102,12 @@
 @endsection
 
 @push('scripts')
-{{-- DataTables CSS & JS --}}
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+{{-- DataTables JS — use standalone builds (include own jQuery) --}}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
-
-<style>
-    #categoriesTable_wrapper .dataTables_filter input {
-        border-radius: 10px;
-        border: 1px solid #dee2e6;
-        padding: 6px 12px;
-        font-size: 0.875rem;
-    }
-    #categoriesTable_wrapper .dataTables_filter input:focus {
-        outline: none;
-        border-color: var(--bs-primary);
-        box-shadow: 0 0 0 3px rgba(5, 128, 140, 0.15);
-    }
-    #categoriesTable_wrapper .dataTables_length select {
-        border-radius: 10px;
-        border: 1px solid #dee2e6;
-        padding: 6px 28px 6px 12px;
-        font-size: 0.875rem;
-    }
-    #categoriesTable_wrapper .dataTables_info,
-    #categoriesTable_wrapper .dataTables_length {
-        font-size: 0.85rem;
-        color: #6B7280;
-    }
-    #categoriesTable_wrapper .page-link {
-        border-radius: 8px !important;
-        margin: 0 2px;
-        font-size: 0.85rem;
-        color: var(--bs-primary);
-    }
-    #categoriesTable_wrapper .page-item.active .page-link {
-        background-color: var(--bs-primary);
-        border-color: var(--bs-primary);
-        color: #fff;
-    }
-</style>
 
 <script>
     $(document).ready(function () {
@@ -117,7 +128,8 @@
                 }
             },
             columnDefs: [
-                { orderable: false, targets: 3 }
+                // Kolom ke-4 (index 3 = Actions) tidak bisa diurutkan
+                { orderable: false, targets: -1 }
             ],
             order: [[0, 'desc']],
         });

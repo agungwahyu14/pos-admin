@@ -10,17 +10,7 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Order::with(['user']);
-        
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where('id', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
-                  });
-        }
-        
-        $orders = $query->latest()->paginate(10);
+        $orders = Order::with(['user'])->latest()->get();
         return view('admin.orders.index', compact('orders'));
     }
 

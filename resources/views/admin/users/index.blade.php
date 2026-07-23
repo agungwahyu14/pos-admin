@@ -1,5 +1,37 @@
 @extends('admin.layouts.app')
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+<style>
+    #usersTable_wrapper .dataTables_filter input,
+    #usersTable_wrapper .dataTables_length select {
+        border-radius: 10px;
+        border: 1px solid #dee2e6;
+        font-size: 0.875rem;
+        background-color: #ffffff;
+    }
+    #usersTable_wrapper .dataTables_filter input { padding: 6px 12px; }
+    #usersTable_wrapper .dataTables_filter input:focus {
+        outline: none;
+        border-color: var(--bs-primary);
+        box-shadow: 0 0 0 3px rgba(5, 128, 140, 0.15);
+    }
+    #usersTable_wrapper .dataTables_length select { padding: 6px 28px 6px 12px; }
+    #usersTable_wrapper .dataTables_info,
+    #usersTable_wrapper .dataTables_length { font-size: 0.85rem; color: #6B7280; }
+    #usersTable_wrapper .page-link {
+        border-radius: 8px !important; margin: 0 2px;
+        font-size: 0.85rem; color: var(--bs-primary);
+    }
+    #usersTable_wrapper .page-item.active .page-link {
+        background-color: var(--bs-primary);
+        border-color: var(--bs-primary);
+        color: #fff;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -17,16 +49,8 @@
 </div>
 
 <x-card>
-    <div class="d-flex justify-content-between mb-3">
-        <div class="w-25">
-            <form action="{{ route('admin.users.index') }}" method="GET">
-                <input type="text" name="search" class="form-control bg-white rounded-3" placeholder="Search users..." value="{{ request('search') }}">
-            </form>
-        </div>
-    </div>
-    
     <div class="table-responsive">
-        <table class="table table-hover align-middle">
+        <table id="usersTable" class="table table-hover align-middle w-100">
             <thead class="table-primary">
                 <tr>
                     <th>Name</th>
@@ -36,7 +60,7 @@
                 </tr>
             </thead>
             <tbody class="table-light">
-                @forelse($users as $user)
+                @foreach($users as $user)
                 <tr>
                     <td>
                         <div class="d-flex align-items-center">
@@ -55,7 +79,7 @@
                         @endif
                     </td>
                     <td class="text-end">
-                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-light rounded-3 text-primary me-2">
+                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-light rounded-3 text-primary me-1">
                             <i class="bi bi-pencil"></i>
                         </a>
                         @if(auth()->id() !== $user->id)
@@ -69,17 +93,42 @@
                         @endif
                     </td>
                 </tr>
-                @empty
-                <tr>
-                    <td colspan="4" class="text-center py-4 text-muted">No users found.</td>
-                </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>
-
-    <div class="d-flex justify-content-end mt-4">
-        {{ $users->links() }}
-    </div>
 </x-card>
 @endsection
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#usersTable').DataTable({
+            responsive: true,
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50, 100],
+            language: {
+                search: "",
+                searchPlaceholder: "Search users...",
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ users",
+                infoEmpty: "No users found",
+                zeroRecords: "No matching users found",
+                paginate: {
+                    previous: '<i class="bi bi-chevron-left"></i>',
+                    next: '<i class="bi bi-chevron-right"></i>',
+                }
+            },
+            columnDefs: [
+                { orderable: false, targets: -1 }
+            ],
+            order: [[0, 'asc']],
+        });
+    });
+</script>
+@endpush

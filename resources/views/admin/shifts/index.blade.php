@@ -1,5 +1,37 @@
 @extends('admin.layouts.app')
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+<style>
+    #shiftsTable_wrapper .dataTables_filter input,
+    #shiftsTable_wrapper .dataTables_length select {
+        border-radius: 10px;
+        border: 1px solid #dee2e6;
+        font-size: 0.875rem;
+        background-color: #ffffff;
+    }
+    #shiftsTable_wrapper .dataTables_filter input { padding: 6px 12px; }
+    #shiftsTable_wrapper .dataTables_filter input:focus {
+        outline: none;
+        border-color: var(--bs-primary);
+        box-shadow: 0 0 0 3px rgba(5, 128, 140, 0.15);
+    }
+    #shiftsTable_wrapper .dataTables_length select { padding: 6px 28px 6px 12px; }
+    #shiftsTable_wrapper .dataTables_info,
+    #shiftsTable_wrapper .dataTables_length { font-size: 0.85rem; color: #6B7280; }
+    #shiftsTable_wrapper .page-link {
+        border-radius: 8px !important; margin: 0 2px;
+        font-size: 0.85rem; color: var(--bs-primary);
+    }
+    #shiftsTable_wrapper .page-item.active .page-link {
+        background-color: var(--bs-primary);
+        border-color: var(--bs-primary);
+        color: #fff;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -14,16 +46,8 @@
 </div>
 
 <x-card>
-    <div class="d-flex justify-content-between mb-3">
-        <div class="w-25">
-            <form action="{{ route('admin.shifts.index') }}" method="GET">
-                <input type="text" name="search" class="form-control bg-white rounded-3" placeholder="Search shifts..." value="{{ request('search') }}">
-            </form>
-        </div>
-    </div>
-    
     <div class="table-responsive">
-        <table class="table table-hover align-middle">
+        <table id="shiftsTable" class="table table-hover align-middle w-100">
             <thead class="table-primary">
                 <tr>
                     <th>Cashier</th>
@@ -37,7 +61,7 @@
                 </tr>
             </thead>
             <tbody class="table-light">
-                @forelse($shifts as $shift)
+                @foreach($shifts as $shift)
                 <tr>
                     <td>
                         <div class="d-flex align-items-center">
@@ -55,12 +79,12 @@
                         @if($shift->actual_cash !== null)
                             Rp{{ number_format($shift->actual_cash, 0, ',', '.') }}
                         @else
-                            -
+                            <span class="text-muted">-</span>
                         @endif
                     </td>
                     <td>
-                        @if($shift->status === 'active')
-                            <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-2">Active</span>
+                        @if($shift->status === 'open')
+                            <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-2">Open</span>
                         @elseif($shift->status === 'closed')
                             <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2">Closed</span>
                         @else
@@ -73,17 +97,42 @@
                         </a>
                     </td>
                 </tr>
-                @empty
-                <tr>
-                    <td colspan="8" class="text-center py-4 text-muted">No shifts found.</td>
-                </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>
-
-    <div class="d-flex justify-content-end mt-4">
-        {{ $shifts->links() }}
-    </div>
 </x-card>
 @endsection
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#shiftsTable').DataTable({
+            responsive: true,
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50, 100],
+            language: {
+                search: "",
+                searchPlaceholder: "Search shifts...",
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ shifts",
+                infoEmpty: "No shifts found",
+                zeroRecords: "No matching shifts found",
+                paginate: {
+                    previous: '<i class="bi bi-chevron-left"></i>',
+                    next: '<i class="bi bi-chevron-right"></i>',
+                }
+            },
+            columnDefs: [
+                { orderable: false, targets: -1 }
+            ],
+            order: [[1, 'desc']], // Sort by start time descending
+        });
+    });
+</script>
+@endpush

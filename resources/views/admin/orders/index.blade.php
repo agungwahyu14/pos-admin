@@ -1,5 +1,37 @@
 @extends('admin.layouts.app')
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+<style>
+    #ordersTable_wrapper .dataTables_filter input,
+    #ordersTable_wrapper .dataTables_length select {
+        border-radius: 10px;
+        border: 1px solid #dee2e6;
+        font-size: 0.875rem;
+        background-color: #ffffff;
+    }
+    #ordersTable_wrapper .dataTables_filter input { padding: 6px 12px; }
+    #ordersTable_wrapper .dataTables_filter input:focus {
+        outline: none;
+        border-color: var(--bs-primary);
+        box-shadow: 0 0 0 3px rgba(5, 128, 140, 0.15);
+    }
+    #ordersTable_wrapper .dataTables_length select { padding: 6px 28px 6px 12px; }
+    #ordersTable_wrapper .dataTables_info,
+    #ordersTable_wrapper .dataTables_length { font-size: 0.85rem; color: #6B7280; }
+    #ordersTable_wrapper .page-link {
+        border-radius: 8px !important; margin: 0 2px;
+        font-size: 0.85rem; color: var(--bs-primary);
+    }
+    #ordersTable_wrapper .page-item.active .page-link {
+        background-color: var(--bs-primary);
+        border-color: var(--bs-primary);
+        color: #fff;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -14,29 +46,21 @@
 </div>
 
 <x-card>
-    <div class="d-flex justify-content-between mb-3">
-        <div class="w-25">
-            <form action="{{ route('admin.orders.index') }}" method="GET">
-                <input type="text" name="search" class="form-control bg-white rounded-3" placeholder="Search orders..." value="{{ request('search') }}">
-            </form>
-        </div>
-    </div>
-    
     <div class="table-responsive">
-        <table class="table table-hover align-middle">
+        <table id="ordersTable" class="table table-hover align-middle w-100">
             <thead class="table-primary">
                 <tr>
                     <th>Order ID</th>
                     <th>Date</th>
                     <th>Cashier</th>
-                    <th>Payment Method</th>
+                    <th>Payment</th>
                     <th>Total</th>
                     <th>Status</th>
                     <th class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody class="table-light">
-                @forelse($orders as $order)
+                @foreach($orders as $order)
                 <tr>
                     <td class="fw-medium">#ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</td>
                     <td>{{ $order->created_at->format('d M Y, H:i') }}</td>
@@ -66,17 +90,42 @@
                         </a>
                     </td>
                 </tr>
-                @empty
-                <tr>
-                    <td colspan="7" class="text-center py-4 text-muted">No orders found.</td>
-                </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>
-
-    <div class="d-flex justify-content-end mt-4">
-        {{ $orders->links() }}
-    </div>
 </x-card>
 @endsection
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#ordersTable').DataTable({
+            responsive: true,
+            pageLength: 10,
+            lengthMenu: [5, 10, 25, 50, 100],
+            language: {
+                search: "",
+                searchPlaceholder: "Search orders...",
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ orders",
+                infoEmpty: "No orders found",
+                zeroRecords: "No matching orders found",
+                paginate: {
+                    previous: '<i class="bi bi-chevron-left"></i>',
+                    next: '<i class="bi bi-chevron-right"></i>',
+                }
+            },
+            columnDefs: [
+                { orderable: false, targets: -1 }
+            ],
+            order: [[1, 'desc']], // Sort by date descending by default
+        });
+    });
+</script>
+@endpush
